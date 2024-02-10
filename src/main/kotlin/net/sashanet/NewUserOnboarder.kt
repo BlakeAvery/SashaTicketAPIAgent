@@ -5,6 +5,7 @@ import io.ktor.client.*
 import io.ktor.client.call.*
 import io.ktor.client.engine.cio.*
 import io.ktor.client.request.*
+import io.ktor.client.statement.*
 import io.ktor.http.*
 import io.ktor.server.util.*
 import io.ktor.server.util.url
@@ -15,6 +16,7 @@ import kotlin.text.get
 
 val client = HttpClient()
 val secrets = Secrets()
+val utils = Utils()
 
 class NewUserOnboarder {
     suspend fun createUser(webhook: AccessRequestWebhook, constants: Constants) {
@@ -38,7 +40,7 @@ class NewUserOnboarder {
                 email =  webhook.email,
                 firstname = webhook.firstName,
                 lastname = webhook.lastName,
-                organization = webhook.org,
+                organization = utils.parseOrgs(webhook.org),
                 roles = arrayOf("SashaNet Agent").toList(),
                 phone = webhook.phoneNumber,
                 mobile = if(webhook.textConsent == "yes") {
@@ -58,9 +60,37 @@ class NewUserOnboarder {
                     append(HttpHeaders.Authorization, "Token token=${secrets.apiKey}")
                     append(HttpHeaders.UserAgent, "SashaTicketAPIAgent/${constants.version}")
                 }
-                val resp = Json.encodeToString(newGuy)
+                val send = Json.encodeToString(newGuy)
+                println(send)
                 contentType(ContentType.Application.Json)
-                setBody(resp)
+                setBody(send)
+            }
+            when(sendUser.status.value) {
+                in 200..299 -> {
+                    println("New user provisioned :)")
+                    val weevil = Json.decodeFromString<User>(sendUser.bodyAsText())
+                    //we move the ticket over to the new user next via API
+                    val reassignAccessRequest = client.put {
+                        url {
+                            protocol = URLProtocol.HTTP
+                            host = "sashaticketv2.net"
+                            appendEncodedPathSegments("/api/v1/tickets/${webhook.internalId}")
+                        }
+                        headers {
+                            append(HttpHeaders.Authorization, "Token token=${secrets.apiKey}")
+                            append(HttpHeaders.UserAgent, "SashaTicketAPIAgent/${constants.version}")
+                        }
+                        val response = """
+                            { "customer_id": ${weevil.id} }
+                        """.trimIndent()
+                        setBody(response)
+                    }
+                    println(sendUser.bodyAsText())
+                }
+                in 300..599 -> {
+                    println("${sendUser.status}")
+                    println(sendUser.bodyAsText())
+                }
             }
         } else {
             println("No action needed. User account not provisioned. This ticket should be rejected.")
