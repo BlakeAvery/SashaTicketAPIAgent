@@ -17,7 +17,10 @@ import kotlin.text.get
 val client = HttpClient()
 val secrets = Secrets()
 val utils = Utils()
-
+/**
+ * NewUserOnboarder: Test class that implements everything we need for our workflow by hand.
+ * This is going to be inserted into utils soon :)
+ */
 class NewUserOnboarder {
     suspend fun createUser(webhook: AccessRequestWebhook, constants: Constants) {
         // First thing is to check if our user exists. If it does, we don't make it.
@@ -42,7 +45,7 @@ class NewUserOnboarder {
                 lastname = webhook.lastName,
                 organization = utils.parseOrgs(webhook.org),
                 roles = arrayOf("SashaNet Agent").toList(),
-                phone = webhook.phoneNumber,
+                phone = webhook.phoneNumber, //TODO: convert phone number to E.164 using libphonenumber
                 mobile = "",
                 password = "SashaNet1!"
             )
@@ -81,7 +84,8 @@ class NewUserOnboarder {
                         val response = """
                             { 
                                 "id": ${webhook.internalId},
-                                "customer_id": ${weevil.id}
+                                "customer_id": ${weevil.id},
+                                "state": "pending close"
                             }
                         """.trimIndent()
                         setBody(response)
