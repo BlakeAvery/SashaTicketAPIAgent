@@ -1,5 +1,6 @@
 package net.sashanet
 
 data class Constants(
-    val version: String = "v0.3proto"
+    val version: String = "0.4proto",
+    val userAgent: String = "SashaTicketAPIAgent/$version"
 )

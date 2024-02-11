@@ -18,8 +18,6 @@ data class AccessRequestWebhook(
     var org: String,
     @SerialName("phone_number")
     var phoneNumber: String,
-    @SerialName("text_consent")
-    var textConsent: String,
     @SerialName("original_requester")
     var originalRequester: String
 )

@@ -7,7 +7,7 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class ReminderReached(
     @SerialName("criteria")
-    var criteria: CriteriaXX,
+    var criteria: CriteriaXX?,
     @SerialName("channel")
-    var channel: Channel
+    var channel: Channel?
 )

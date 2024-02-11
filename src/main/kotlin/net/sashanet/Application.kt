@@ -15,7 +15,7 @@ val newUserOnboarder = NewUserOnboarder()
 val constants = Constants()
 
 fun main() {
-    println("Kalimera! Welcome to SashaTicketAPIAgent ${constants.version}")
+    println("Kalimera! Welcome to SashaTicketAPIAgent v${constants.version}")
     embeddedServer(Netty, port = 80) {
         routing {
             post("/onboard") {
@@ -28,7 +28,7 @@ fun main() {
             }
             get("/onboard") {
                 call.respondText("This method is not authorized for this resource.", ContentType.Text.Plain, HttpStatusCode.NotImplemented)
-                val fakeUser = AccessRequestWebhook("100001", "22", "leaabito05@gmail.com", "Lea", "Abito", "Southview", "2131231123", "y", "1")
+                val fakeUser = AccessRequestWebhook("100001", "22", "leaabito05@gmail.com", "Lea", "Abito", "Southview", "2131231123","1")
                 newUserOnboarder.createUser(fakeUser, constants)
             }
         }

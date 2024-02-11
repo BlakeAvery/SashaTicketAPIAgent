@@ -7,5 +7,5 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class NotificationConfig(
     @SerialName("matrix")
-    var matrix: Matrix
+    var matrix: Matrix?
 )

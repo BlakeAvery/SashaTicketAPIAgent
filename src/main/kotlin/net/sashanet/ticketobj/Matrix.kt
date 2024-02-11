@@ -7,11 +7,11 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class Matrix(
     @SerialName("create")
-    var create: Create,
+    var create: Create?,
     @SerialName("update")
-    var update: Update,
+    var update: Update?,
     @SerialName("reminder_reached")
-    var reminderReached: ReminderReached,
+    var reminderReached: ReminderReached?,
     @SerialName("escalation")
-    var escalation: Escalation
+    var escalation: Escalation?
 )

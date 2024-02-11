@@ -7,7 +7,7 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class NotificationSound(
     @SerialName("file")
-    var `file`: String,
+    var `file`: String?,
     @SerialName("enabled")
-    var enabled: Boolean
+    var enabled: Boolean?
 )

@@ -7,7 +7,7 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class Channel(
     @SerialName("email")
-    var email: Boolean,
+    var email: Boolean?,
     @SerialName("online")
-    var online: Boolean
+    var online: Boolean?
 )

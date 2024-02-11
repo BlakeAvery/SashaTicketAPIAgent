@@ -29,7 +29,7 @@ class NewUserOnboarder {
             }
             headers {
                 append(HttpHeaders.Authorization, "Token token=${secrets.apiKey}")
-                append(HttpHeaders.UserAgent, "SashaTicketAPIAgent/${constants.version}")
+                append(HttpHeaders.UserAgent, constants.userAgent)
             }
         }
         val searchResponse: String = searchNewUser.body()
@@ -43,11 +43,7 @@ class NewUserOnboarder {
                 organization = utils.parseOrgs(webhook.org),
                 roles = arrayOf("SashaNet Agent").toList(),
                 phone = webhook.phoneNumber,
-                mobile = if(webhook.textConsent == "yes") {
-                    webhook.phoneNumber
-                } else {
-                    ""
-                },
+                mobile = "",
                 password = "SashaNet1!"
             )
             val sendUser = client.post {
@@ -67,7 +63,9 @@ class NewUserOnboarder {
             }
             when(sendUser.status.value) {
                 in 200..299 -> {
-                    println("New user provisioned :)")
+                    println("New user provisioned :) Here is their raw JSON for your observation.")
+                    println(sendUser.bodyAsText())
+                    println("Converting JSON to User object...")
                     val weevil = Json.decodeFromString<User>(sendUser.bodyAsText())
                     //we move the ticket over to the new user next via API
                     val reassignAccessRequest = client.put {
@@ -81,11 +79,22 @@ class NewUserOnboarder {
                             append(HttpHeaders.UserAgent, "SashaTicketAPIAgent/${constants.version}")
                         }
                         val response = """
-                            { "customer_id": ${weevil.id} }
+                            { 
+                                "id": ${webhook.internalId},
+                                "customer_id": ${weevil.id}
+                            }
                         """.trimIndent()
                         setBody(response)
                     }
-                    println(sendUser.bodyAsText())
+                    when(reassignAccessRequest.status.value) {
+                        in 200..299 -> {
+                            println("Ticket updated to new user.")
+                        }
+                        else -> {
+                            println("${reassignAccessRequest.status}")
+                            println(reassignAccessRequest.bodyAsText())
+                        }
+                    }
                 }
                 in 300..599 -> {
                     println("${sendUser.status}")

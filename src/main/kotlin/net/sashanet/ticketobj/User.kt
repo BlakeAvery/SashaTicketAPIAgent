@@ -7,85 +7,85 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class User(
     @SerialName("id")
-    var id: Int,
+    var id: Int? = null,
     @SerialName("organization_id")
-    var organizationId: Int,
+    var organizationId: Int? = null,
     @SerialName("login")
-    var login: String,
+    var login: String? = null,
     @SerialName("firstname")
-    var firstname: String,
+    var firstname: String? = null,
     @SerialName("lastname")
-    var lastname: String,
+    var lastname: String? = null,
     @SerialName("email")
-    var email: String,
+    var email: String? = null,
     @SerialName("password")
-    var password: String?,
+    var password: String? = null,
     @SerialName("image")
-    var image: String,
+    var image: String? = null,
     @SerialName("image_source")
-    var imageSource: String?,
+    var imageSource: String? = null,
     @SerialName("web")
-    var web: String,
+    var web: String? = null,
     @SerialName("phone")
-    var phone: String,
+    var phone: String? = null,
     @SerialName("fax")
-    var fax: String,
+    var fax: String? = null,
     @SerialName("mobile")
-    var mobile: String,
+    var mobile: String? = null,
     @SerialName("department")
-    var department: String,
+    var department: String? = null,
     @SerialName("street")
-    var street: String,
+    var street: String? = null,
     @SerialName("zip")
-    var zip: String,
+    var zip: String? = null,
     @SerialName("city")
-    var city: String,
+    var city: String? = null,
     @SerialName("country")
-    var country: String,
+    var country: String? = null,
     @SerialName("address")
-    var address: String,
+    var address: String? = null,
     @SerialName("vip")
-    var vip: Boolean,
+    var vip: Boolean? = null,
     @SerialName("verified")
-    var verified: Boolean,
+    var verified: Boolean? = null,
     @SerialName("active")
-    var active: Boolean,
+    var active: Boolean? = null,
     @SerialName("note")
-    var note: String,
+    var note: String? = null,
     @SerialName("last_login")
-    var lastLogin: String,
+    var lastLogin: String? = null,
     @SerialName("source")
-    var source: String?,
+    var source: String? = null,
     @SerialName("login_failed")
-    var loginFailed: Int,
+    var loginFailed: Int? = null,
     @SerialName("out_of_office")
-    var outOfOffice: Boolean,
+    var outOfOffice: Boolean? = null,
     @SerialName("out_of_office_start_at")
-    var outOfOfficeStartAt: String?,
+    var outOfOfficeStartAt: String? = null,
     @SerialName("out_of_office_end_at")
-    var outOfOfficeEndAt: String?,
+    var outOfOfficeEndAt: String? = null,
     @SerialName("out_of_office_replacement_id")
-    var outOfOfficeReplacementId: String?,
+    var outOfOfficeReplacementId: String? = null,
     @SerialName("preferences")
-    var preferences: Preferences,
+    var preferences: Preferences? = null,
     @SerialName("updated_by_id")
-    var updatedById: Int,
+    var updatedById: Int? = null,
     @SerialName("created_by_id")
-    var createdById: Int,
+    var createdById: Int? = null,
     @SerialName("created_at")
-    var createdAt: String,
+    var createdAt: String? = null,
     @SerialName("updated_at")
-    var updatedAt: String,
+    var updatedAt: String? = null,
     @SerialName("role_ids")
-    var roleIds: List<Int>,
+    var roleIds: List<Int?>,
     @SerialName("two_factor_preference_ids")
-    var twoFactorPreferenceIds: List<String>,
+    var twoFactorPreferenceIds: List<String?>,
     @SerialName("organization_ids")
-    var organizationIds: List<Int>,
+    var organizationIds: List<Int?>,
     @SerialName("authorization_ids")
-    var authorizationIds: List<String>,
+    var authorizationIds: List<String?>,
     @SerialName("overview_sorting_ids")
-    var overviewSortingIds: List<String>,
+    var overviewSortingIds: List<String?>,
     @SerialName("group_ids")
-    var groupIds: GroupIds
+    var groupIds: GroupIds? = null
 )
