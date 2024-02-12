@@ -14,14 +14,12 @@ import kotlinx.serialization.json.Json
 import net.sashanet.ticketobj.*
 import kotlin.text.get
 
-val client = HttpClient()
-val secrets = Secrets()
-val utils = Utils()
+private val client = HttpClient()
 /**
  * NewUserOnboarder: Test class that implements everything we need for our workflow by hand.
  * This is going to be inserted into utils soon :)
  */
-class NewUserOnboarder {
+class NewUserOnboarder() {
     suspend fun createUser(webhook: AccessRequestWebhook, constants: Constants) {
         // First thing is to check if our user exists. If it does, we don't make it.
         val searchNewUser  = client.get {
@@ -40,7 +38,7 @@ class NewUserOnboarder {
         if(searchResponse == "[]") { //we proceed
             val newGuy = NewUser(
                 login = webhook.email,
-                email =  webhook.email,
+                email = webhook.email,
                 firstname = webhook.firstName,
                 lastname = webhook.lastName,
                 organization = utils.parseOrgs(webhook.org),
@@ -49,6 +47,7 @@ class NewUserOnboarder {
                 mobile = "",
                 password = "SashaNet1!"
             )
+            //TODO: place this into the APIAgent class as it should be :)
             val sendUser = client.post {
                 url {
                     protocol = URLProtocol.HTTP
@@ -64,49 +63,20 @@ class NewUserOnboarder {
                 contentType(ContentType.Application.Json)
                 setBody(send)
             }
-            when(sendUser.status.value) {
+            when (sendUser.status.value) {
                 in 200..299 -> {
                     println("New user provisioned :) Here is their raw JSON for your observation.")
                     println(sendUser.bodyAsText())
                     println("Converting JSON to User object...")
                     val weevil = Json.decodeFromString<User>(sendUser.bodyAsText())
                     //we move the ticket over to the new user next via API
-                    val reassignAccessRequest = client.put {
-                        url {
-                            protocol = URLProtocol.HTTP
-                            host = "sashaticketv2.net"
-                            appendEncodedPathSegments("/api/v1/tickets/${webhook.internalId}")
-                        }
-                        headers {
-                            append(HttpHeaders.Authorization, "Token token=${secrets.apiKey}")
-                            append(HttpHeaders.UserAgent, "SashaTicketAPIAgent/${constants.version}")
-                        }
-                        val response = """
-                            { 
-                                "id": ${webhook.internalId},
-                                "customer_id": ${weevil.id},
-                                "state": "pending close"
-                            }
-                        """.trimIndent()
-                        setBody(response)
-                    }
-                    when(reassignAccessRequest.status.value) {
-                        in 200..299 -> {
-                            println("Ticket updated to new user.")
-                        }
-                        else -> {
-                            println("${reassignAccessRequest.status}")
-                            println(reassignAccessRequest.bodyAsText())
-                        }
-                    }
+                    val ticket = TicketAPIObj(id = webhook.internalId.toInt(), customerId = weevil.id, stateId = 3)
+                    apiAgent.modifyTicket(ticket)
                 }
-                in 300..599 -> {
-                    println("${sendUser.status}")
-                    println(sendUser.bodyAsText())
+                else -> {
+                    println("No action needed. User account not provisioned. This ticket should be rejected.")
                 }
             }
-        } else {
-            println("No action needed. User account not provisioned. This ticket should be rejected.")
         }
     }
 }
