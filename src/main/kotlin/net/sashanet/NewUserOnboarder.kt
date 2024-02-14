@@ -45,37 +45,11 @@ class NewUserOnboarder() {
                 roles = arrayOf("SashaNet Agent").toList(),
                 phone = webhook.phoneNumber, //TODO: convert phone number to E.164 using libphonenumber
                 mobile = "",
-                password = "SashaNet1!"
+                password = "SashaNet1!" //TODO: Randomly generate this password using Utils helper function
             )
-            //TODO: place this into the APIAgent class as it should be :)
-            val sendUser = client.post {
-                url {
-                    protocol = URLProtocol.HTTP
-                    host = "sashaticketv2.net"
-                    appendEncodedPathSegments("/api/v1/users")
-                }
-                headers {
-                    append(HttpHeaders.Authorization, "Token token=${secrets.apiKey}")
-                    append(HttpHeaders.UserAgent, "SashaTicketAPIAgent/${constants.version}")
-                }
-                val send = Json.encodeToString(newGuy)
-                println(send)
-                contentType(ContentType.Application.Json)
-                setBody(send)
-            }
-            when (sendUser.status.value) {
-                in 200..299 -> {
-                    println("New user provisioned :) Here is their raw JSON for your observation.")
-                    println(sendUser.bodyAsText())
-                    println("Converting JSON to User object...")
-                    val weevil = Json.decodeFromString<User>(sendUser.bodyAsText())
-                    //we move the ticket over to the new user next via API
-                    val ticket = TicketAPIObj(id = webhook.internalId.toInt(), customerId = weevil.id, stateId = 3)
-                    apiAgent.modifyTicket(ticket)
-                }
-                else -> {
-                    println("No action needed. User account not provisioned. This ticket should be rejected.")
-                }
+            val newUser = apiAgent.createUser(newGuy)
+            if(newUser != null) {
+                apiAgent.modifyTicket(TicketAPIObj(id = webhook.internalId.toInt(), customerId = newUser.id, stateId = 4))
             }
         }
     }

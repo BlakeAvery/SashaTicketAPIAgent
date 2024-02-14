@@ -1,6 +1,10 @@
 package net.sashanet
 
 import net.sashanet.ticketobj.*
+import java.text.DateFormat
+import java.util.Date
+import java.time.*
+import java.time.format.*
 
 /**
  * Utils: Does things for our APIAgent. Speaks to the APIAgent class to do its dirty work sometimes.
@@ -25,6 +29,10 @@ class Utils {
             "movie" -> return "Movie"
             else -> return "Other"
         }
+    }
+    fun parseJsonDate() {
+        DateTime.format( DateTimeFormatter.ISO_INSTANT )
+
     }
     suspend fun patchMediaReqTitle(webhook: MediaRequestWebhook) {
         val ticket = TicketAPIObj(id = webhook.internalId?.toInt(),

@@ -73,7 +73,7 @@ data class TicketAPIObj(
     @SerialName("time_unit")
     var timeUnit: String? = null,
     @SerialName("preferences")
-    var preferences: PreferencesXX? = PreferencesXX(),
+    var preferences: PreferencesXX? = null,
     @SerialName("updated_by_id")
     var updatedById: Int? = null,
     @SerialName("created_by_id")

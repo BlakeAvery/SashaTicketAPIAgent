@@ -54,7 +54,34 @@ class APIAgent {
             }
         }
     }
-    suspend fun createUser(user: NewUser): Boolean {
+    suspend fun createUser(user: NewUser): User? {
+        val sendUser = client.post {
+            url {
+                protocol = URLProtocol.HTTP
+                host = "sashaticketv2.net"
+                appendEncodedPathSegments("/api/v1/users")
+            }
+            headers {
+                append(HttpHeaders.Authorization, "Token token=${secrets.apiKey}")
+                append(HttpHeaders.UserAgent, "SashaTicketAPIAgent/${constants.version}")
+            }
+            val send = Json.encodeToString(user)
+            println(send)
+            contentType(ContentType.Application.Json)
+            setBody(send)
+        }
+        when (sendUser.status.value) {
+            in 200..299 -> {
+                println("New user provisioned :) Here is their raw JSON for your observation.")
+                println(sendUser.bodyAsText())
+                return Json.decodeFromString(sendUser.bodyAsText())
+            }
 
+            else -> {
+                println("${sendUser.status.description} :(")
+                println(sendUser.bodyAsText())
+                return null
+            }
+        }
     }
 }
