@@ -43,12 +43,12 @@ class APIAgent {
         var respBody = request.bodyAsText()
         when(request.status.value) {
             in 200..299 -> {
-                println("${request.status} :)")
+                println("${request.status.description} :)")
                 println(respBody)
                 return true
             }
             else -> {
-                println("${request.status} :(")
+                println("${request.status.description} :(")
                 println(respBody)
                 return false
             }
@@ -76,7 +76,6 @@ class APIAgent {
                 println(sendUser.bodyAsText())
                 return Json.decodeFromString(sendUser.bodyAsText())
             }
-
             else -> {
                 println("${sendUser.status.description} :(")
                 println(sendUser.bodyAsText())

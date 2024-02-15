@@ -64,6 +64,8 @@ data class TicketAPIObj(
     var createArticleSenderId: Int? = null,
     @SerialName("article_count")
     var articleCount: Int? = null,
+    @SerialName("article")
+    var article: Article? = null,
     @SerialName("escalation_at")
     var escalationAt: String? = null,
     @SerialName("pending_time")
@@ -73,7 +75,7 @@ data class TicketAPIObj(
     @SerialName("time_unit")
     var timeUnit: String? = null,
     @SerialName("preferences")
-    var preferences: PreferencesXX? = null,
+    var preferences: Preferences? = null,
     @SerialName("updated_by_id")
     var updatedById: Int? = null,
     @SerialName("created_by_id")

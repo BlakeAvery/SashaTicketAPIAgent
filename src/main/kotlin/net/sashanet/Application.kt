@@ -29,8 +29,8 @@ fun main() {
                 newUserOnboarder.createUser(data, constants)
             }
             get("/onboard") {
-                val fakeUser = AccessRequestWebhook("100143", "152", "leaabito05@gmail.com", "Lea", "Abito", "Southview", "2131231123","1")
-                newUserOnboarder.createUser(fakeUser, constants)
+                /*val fakeUser = AccessRequestWebhook("100143", "152", "leaabito05@gmail.com", "Lea", "Abito", "Southview", "2131231123","1")
+                newUserOnboarder.createUser(fakeUser, constants)*/
                 call.respondText("This method is not authorized for this resource... Yet :)", ContentType.Text.Plain, HttpStatusCode.Processing)
             }
             post("/newmediareq") {
@@ -43,6 +43,11 @@ fun main() {
             }
             get("/newmediareq") {
                 call.respondText("This method is not authorized for this resource.", ContentType.Text.Plain, HttpStatusCode.NotImplemented)
+            }
+            route("/") {
+                get {
+                    call.respondText("This method is not authorized for this resource.", ContentType.Text.Plain, HttpStatusCode(418, "I'm a Teapot :)"))
+                }
             }
         }
     }.start(wait = true)

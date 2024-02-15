@@ -49,7 +49,34 @@ class NewUserOnboarder() {
             )
             val newUser = apiAgent.createUser(newGuy)
             if(newUser != null) {
-                apiAgent.modifyTicket(TicketAPIObj(id = webhook.internalId.toInt(), customerId = newUser.id, stateId = 4))
+                apiAgent.modifyTicket(TicketAPIObj(
+                    id = webhook.internalId.toInt(),
+                    customerId = newUser.id,
+                    stateId = 3,
+                    article = Article(
+                        internal = true,
+                        sender = "System",
+                        type = "email",
+                        to = newUser.email,
+                        contentType = "text/html",
+                        subject = "Welcome to SashaTicket, ${newUser.firstname} :3",
+                        body = """
+                            Hello ${newUser.firstname},<br/><br/>
+                            This email is to let you know that an account has been created for you on SashaTicket!<br/>
+                            SashaTicket is your one source to request anything from SashaNet's team, up to and including Sasha herself :3<br/><br/>
+                            Your login information is as follows. Please be sure to change the password shown as soon as possible.<br/>
+                            This password is automatically generated, and should not be considered secure.<br/><br/>
+                            Username/login: ${newUser.login}<br/>
+                            Password: ${newGuy.password}<br/><br/>
+                            If you would also like to receive SMS notifications/communications on tickets, please let us know by responding to this email,<br/>
+                            or by placing a SMS Opt-In ticket on SashaTicket.<br/><br/>
+                            Log in <a href=http://99.38.119.115>here</a>!<br/>
+                            (Or if you happen to be on site at SashaNet's main Beverly location use <a href=http://sashaticketv2.net>this link</a> instead :3)<br/><br/>
+                            SashaTicket System<br/>
+                            Access provisioned under #REQ-${webhook.ticketNumber} by ${constants.userAgent}<br/>
+                        """.trimIndent().trim('\n')
+                    )
+                ))
             }
         }
     }
