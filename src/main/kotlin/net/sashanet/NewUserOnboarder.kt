@@ -52,7 +52,7 @@ class NewUserOnboarder() {
                 apiAgent.modifyTicket(TicketAPIObj(
                     id = webhook.internalId.toInt(),
                     customerId = newUser.id,
-                    stateId = 3,
+                    //stateId = 3,
                     article = Article(
                         internal = true,
                         sender = "System",
