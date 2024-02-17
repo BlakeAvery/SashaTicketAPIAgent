@@ -1,5 +1,6 @@
 package net.sashanet
 
+import kotlinx.serialization.json.Json
 import net.sashanet.ticketobj.*
 import java.text.DateFormat
 import java.util.Date
@@ -32,7 +33,15 @@ class Utils {
     }
     fun parseJsonDate() {
 
-
+    }
+    suspend fun getUserEmailFromID(id: Int): String {
+        var search = apiAgent.searchUser("id:$id")
+        if(search != "[]") {
+            var user = Json.decodeFromString<User>(search)
+            return user.email!!
+        } else {
+            return "noreply@sashanet.net"
+        }
     }
     suspend fun patchMediaReqTitle(webhook: MediaRequestWebhook) {
         val ticket = TicketAPIObj(id = webhook.internalId?.toInt(),

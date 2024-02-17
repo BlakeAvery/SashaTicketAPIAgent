@@ -11,6 +11,7 @@ import io.ktor.server.util.url
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import net.sashanet.ticketobj.*
+import javax.swing.text.html.HTML.Tag
 import kotlin.text.get
 
 /**
@@ -80,6 +81,86 @@ class APIAgent {
                 println("${sendUser.status.description} :(")
                 println(sendUser.bodyAsText())
                 return null
+            }
+        }
+    }
+    suspend fun searchUser(query: String): String {
+        val search = client.get {
+            url {
+                protocol = URLProtocol.HTTP
+                host = "sashaticketv2.net"
+                appendEncodedPathSegments("/api/v1/users/search?query=${query}")
+            }
+            headers {
+                append(HttpHeaders.Authorization, "Token token=${secrets.apiKey}")
+                append(HttpHeaders.UserAgent, constants.userAgent)
+            }
+        }
+        when (search.status.value) {
+            in 200..299 -> {
+                println("${search.status.description} :)")
+                return search.body()
+            }
+
+            else -> {
+                println("${search.status.description} :)")
+                return search.body()
+            }
+        }
+    }
+    suspend fun addTag(tag: String, ticket: Int) {
+        val send = client.post {
+            url {
+                protocol = URLProtocol.HTTP
+                host = "sashaticketv2.net"
+                appendEncodedPathSegments("/api/v1/tags/add")
+            }
+            headers {
+                append(HttpHeaders.Authorization, "Token token=${secrets.apiKey}")
+                append(HttpHeaders.UserAgent, "SashaTicketAPIAgent/${constants.version}")
+            }
+            val send = Json.encodeToString(TagAPIObj(tag, ticket, "Ticket"))
+            println(send)
+            contentType(ContentType.Application.Json)
+            setBody(send)
+        }
+        val respBody = send.bodyAsText()
+        when(send.status.value) {
+            in 200..299 -> {
+                println("${send.status.description} :)")
+                println(respBody)
+            }
+            else -> {
+                println("${send.status.description} :)")
+                println(respBody)
+            }
+        }
+    }
+    suspend fun deleteTag(tag: String, ticket: Int) {
+        val send = client.delete {
+            url {
+                protocol = URLProtocol.HTTP
+                host = "sashaticketv2.net"
+                appendEncodedPathSegments("/api/v1/tags/remove")
+            }
+            headers {
+                append(HttpHeaders.Authorization, "Token token=${secrets.apiKey}")
+                append(HttpHeaders.UserAgent, "SashaTicketAPIAgent/${constants.version}")
+            }
+            val send = Json.encodeToString(TagAPIObj(tag, ticket, "Ticket"))
+            println(send)
+            contentType(ContentType.Application.Json)
+            setBody(send)
+        }
+        val respBody = send.bodyAsText()
+        when(send.status.value) {
+            in 200..299 -> {
+                println("${send.status.description} :)")
+                println(respBody)
+            }
+            else -> {
+                println("${send.status.description} :)")
+                println(respBody)
             }
         }
     }

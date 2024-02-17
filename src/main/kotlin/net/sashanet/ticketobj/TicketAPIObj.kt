@@ -12,6 +12,8 @@ data class TicketAPIObj(
     var groupId: Int? = null,
     @SerialName("priority_id")
     var priorityId: Int? = null,
+    @SerialName("state")
+    var state: String? = null,
     @SerialName("state_id")
     var stateId: Int? = null,
     @SerialName("organization_id")

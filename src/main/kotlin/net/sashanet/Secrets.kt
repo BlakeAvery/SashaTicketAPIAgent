@@ -1,3 +1,3 @@
 package net.sashanet
 
-data class Secrets(val apiKey: String = "J5m1Ydf8TBdOxb8As6Z-asJ5RkuQJGr4wydVKp7HTt0CDjJWn9RlZrrWJ6LAKJON")
+data class Secrets(val apiKey: String = "BW_rXsEjmYBs592ifF7rMYLeU8z8_IXe-Py-yZ9sQTPjm66OWLUMlCbC7oX3lB8n")
