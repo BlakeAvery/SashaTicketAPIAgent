@@ -35,4 +35,4 @@ out/
 ### VS Code ###
 .vscode/
 
-src/main/kotlin/net/sashanet/Secrets.kt
+!src/main/kotlin/net/sashanet/Secrets.kt
