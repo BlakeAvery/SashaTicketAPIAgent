@@ -14,6 +14,7 @@ import java.time.format.*
 
 val apiAgent = APIAgent()
 class Utils {
+    var lastTicketProcessed: Int = 0
     fun parseOrgs(org: String): String {
         when(org) {
             "fgss" -> return "FGSS"
@@ -34,12 +35,24 @@ class Utils {
     fun parseJsonDate() {
 
     }
+    fun generatePassword(length: Int): String {
+        val possibleChars: CharSequence = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890!@#$%^&*"
+        var ret = ""
+        for(i in 0..length - 1) {
+            ret += possibleChars.random()
+        }
+        println(ret)
+        return ret
+    }
     suspend fun getUserEmailFromID(id: Int): String {
+        println("Searching user...")
         var search = apiAgent.searchUser("id:$id")
         if(search != "[]") {
-            var user = Json.decodeFromString<User>(search)
-            return user.email!!
+            println("User found! Converting...")
+            var user = Json.decodeFromString<List<User>>(search)
+            return user[0].email!!
         } else {
+            println("No user found. returning default value")
             return "noreply@sashanet.net"
         }
     }

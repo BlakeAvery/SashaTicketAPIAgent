@@ -26,7 +26,7 @@ fun main() {
                 println(webhook)
                 val data = Json.decodeFromString<AccessRequestWebhook>(webhook)
                 call.respondText("Poggers", ContentType.Text.Plain, HttpStatusCode.Accepted)
-                newUserOnboarder.createUser(data, constants)
+                newUserOnboarder.createUser(data)
             }
             get("/onboard") {
                 call.respondText("This method is not authorized for this resource... Yet :)", ContentType.Text.Plain, HttpStatusCode.Processing)

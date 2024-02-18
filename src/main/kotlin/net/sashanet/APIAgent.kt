@@ -41,7 +41,7 @@ class APIAgent {
             contentType(ContentType.Application.Json)
             setBody(send)
         }
-        var respBody = request.bodyAsText()
+        val respBody = request.bodyAsText()
         when(request.status.value) {
             in 200..299 -> {
                 println("${request.status.description} :)")
@@ -131,7 +131,7 @@ class APIAgent {
                 println(respBody)
             }
             else -> {
-                println("${send.status.description} :)")
+                println("${send.status.description} :(")
                 println(respBody)
             }
         }
@@ -159,8 +159,75 @@ class APIAgent {
                 println(respBody)
             }
             else -> {
-                println("${send.status.description} :)")
+                println("${send.status.description} :(")
                 println(respBody)
+            }
+        }
+    }
+    suspend fun getTicketArticles(id: Int): List<Article> {
+        var retList: List<Article> = listOf()
+        val send = client.get {
+            url {
+                protocol = URLProtocol.HTTP
+                host = "sashaticketv2.net"
+                appendEncodedPathSegments("/api/v1/ticket_articles/by_ticket/$id")
+            }
+            headers {
+                append(HttpHeaders.Authorization, "Token token=${secrets.apiKey}")
+                append(HttpHeaders.UserAgent, "SashaTicketAPIAgent/${constants.version}")
+            }
+        }
+        retList = Json.decodeFromString(send.bodyAsText())
+        return retList
+    }
+    suspend fun getArticle(id: Int): Article? {
+        val send = client.get {
+            url {
+                protocol = URLProtocol.HTTP
+                host = "sashaticketv2.net"
+                appendEncodedPathSegments("/api/v1/ticket_articles/$id")
+            }
+            headers {
+                append(HttpHeaders.Authorization, "Token token=${secrets.apiKey}")
+                append(HttpHeaders.UserAgent, "SashaTicketAPIAgent/${constants.version}")
+            }
+        }
+        when(send.status.value) {
+            in 200..299 -> {
+                println("${send.status.description} :)")
+                return Json.decodeFromString(send.bodyAsText())
+            }
+
+            else -> {
+                println("${send.status.description} :(")
+                return null
+            }
+        }
+    }
+    suspend fun newArticle(article: Article): Boolean {
+        val send = client.post {
+            url {
+                protocol = URLProtocol.HTTP
+                host = "sashaticketv2.net"
+                appendEncodedPathSegments("/api/v1/ticket_articles")
+            }
+            headers {
+                append(HttpHeaders.Authorization, "Token token=${secrets.apiKey}")
+                append(HttpHeaders.UserAgent, "SashaTicketAPIAgent/${constants.version}")
+            }
+            val send = Json.encodeToString(article)
+            println(send)
+            contentType(ContentType.Application.Json)
+            setBody(send)
+        }
+        when(send.status.value) {
+            in 200..299 -> {
+                println("${send.status.description} :)")
+                return true
+            }
+            else -> {
+                println("${send.status.description} :(")
+                return false
             }
         }
     }
