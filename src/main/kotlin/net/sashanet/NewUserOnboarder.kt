@@ -35,7 +35,6 @@ class NewUserOnboarder() {
                     sender = "Agent",
                     contentType = "text/html",
                     type = "note",
-                    subject = "API Agent now touching ticket!",
                     body = "Processing by API Agent begins at ${Date()}."
                 )
             )
@@ -81,6 +80,16 @@ class NewUserOnboarder() {
                             SashaTicket System<br/>
                             Access provisioned under #REQ-${webhook.ticketNumber} by ${constants.userAgent}<br/>
                         """.trimIndent().trim('\n')
+                        )
+                    ))
+                    apiAgent.modifyTicket(TicketAPIObj(
+                        id = webhook.internalId.toInt(),
+                        article = Article(
+                            internal = true,
+                            sender = "Agent",
+                            type = "note",
+                            contentType = "text/html",
+                            body = "Processing ended by ${constants.userAgent} at ${Date()}."
                         )
                     ))
                 }

@@ -86,6 +86,8 @@ data class TicketAPIObj(
     var createdAt: String? = null,
     @SerialName("updated_at")
     var updatedAt: String? = null,
+    @SerialName("approved")
+    var approved: Boolean? = null,
     @SerialName("media_name")
     var mediaName: String? = null,
     @SerialName("media_type")
@@ -131,5 +133,14 @@ data class TicketAPIObj(
     @SerialName("access_phone")
     var accessPhone: String? = null,
     @SerialName("access_email")
-    var accessEmail: String? = null
+    var accessEmail: String? = null,
+    @SerialName("phone_attribute")
+    var phoneAttribute: String? = null,
+    @SerialName("pbx_action")
+    var pbxAction: String? = null,
+    @SerialName("pbx_site_opts")
+    var pbxSiteOpts: String? = null,
+    @SerialName("console")
+    var console: String? = null
+
 )

@@ -11,5 +11,7 @@ data class MediaRequestWebhook(
     @SerialName("media_name")
     var mediaName: String? = null,
     @SerialName("media_type")
-    var mediaType: String? = null
+    var mediaType: String? = null,
+    @SerialName("console")
+    var console: String? = null
 )

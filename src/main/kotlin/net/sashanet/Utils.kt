@@ -57,8 +57,13 @@ class Utils {
         }
     }
     suspend fun patchMediaReqTitle(webhook: MediaRequestWebhook) {
+        var modTitle = if(webhook.console != null) {
+            "${webhook.mediaName} (${webhook.console} game)"
+        } else {
+            "${webhook.mediaName} (${parseMediaTypes(webhook.mediaType)})"
+        }
         val ticket = TicketAPIObj(id = webhook.internalId?.toInt(),
-            title = "${webhook.mediaName} (${parseMediaTypes(webhook.mediaType)})")
+            title = modTitle)
         apiAgent.modifyTicket(ticket)
     }
 }

@@ -28,7 +28,7 @@ class APIAgent {
         val request = client.put {
             url {
                 protocol = URLProtocol.HTTP
-                host = "sashaticketv2.net"
+                host = constants.host
                 appendEncodedPathSegments("/api/v1/tickets/${ticket.id}")
             }
             headers {
@@ -59,7 +59,7 @@ class APIAgent {
         val sendUser = client.post {
             url {
                 protocol = URLProtocol.HTTP
-                host = "sashaticketv2.net"
+                host = constants.host
                 appendEncodedPathSegments("/api/v1/users")
             }
             headers {
@@ -88,7 +88,7 @@ class APIAgent {
         val search = client.get {
             url {
                 protocol = URLProtocol.HTTP
-                host = "sashaticketv2.net"
+                host = constants.host
                 appendEncodedPathSegments("/api/v1/users/search?query=${query}")
             }
             headers {
@@ -112,7 +112,7 @@ class APIAgent {
         val send = client.post {
             url {
                 protocol = URLProtocol.HTTP
-                host = "sashaticketv2.net"
+                host = constants.host
                 appendEncodedPathSegments("/api/v1/tags/add")
             }
             headers {
@@ -140,7 +140,7 @@ class APIAgent {
         val send = client.delete {
             url {
                 protocol = URLProtocol.HTTP
-                host = "sashaticketv2.net"
+                host = constants.host
                 appendEncodedPathSegments("/api/v1/tags/remove")
             }
             headers {
@@ -169,7 +169,7 @@ class APIAgent {
         val send = client.get {
             url {
                 protocol = URLProtocol.HTTP
-                host = "sashaticketv2.net"
+                host = constants.host
                 appendEncodedPathSegments("/api/v1/ticket_articles/by_ticket/$id")
             }
             headers {
@@ -184,7 +184,7 @@ class APIAgent {
         val send = client.get {
             url {
                 protocol = URLProtocol.HTTP
-                host = "sashaticketv2.net"
+                host = constants.host
                 appendEncodedPathSegments("/api/v1/ticket_articles/$id")
             }
             headers {
@@ -208,7 +208,7 @@ class APIAgent {
         val send = client.post {
             url {
                 protocol = URLProtocol.HTTP
-                host = "sashaticketv2.net"
+                host = constants.host
                 appendEncodedPathSegments("/api/v1/ticket_articles")
             }
             headers {
