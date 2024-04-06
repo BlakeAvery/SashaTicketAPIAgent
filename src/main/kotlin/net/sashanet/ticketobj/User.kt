@@ -34,6 +34,8 @@ data class User(
     var mobile: String? = null,
     @SerialName("department")
     var department: String? = null,
+    @SerialName("title")
+    var title: String? = null,
     @SerialName("street")
     var street: String? = null,
     @SerialName("zip")

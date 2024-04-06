@@ -23,6 +23,35 @@ import kotlin.text.get
 
 private val client = HttpClient()
 class APIAgent {
+    suspend fun newTicket(ticket: TicketAPIObj): TicketAPIObj? {
+        val sendTicket = client.post {
+            url {
+                protocol = URLProtocol.HTTP
+                host = constants.host
+                appendEncodedPathSegments("/api/v1/tickets")
+            }
+            headers {
+                append(HttpHeaders.Authorization, "Token token=${secrets.apiKey}")
+                append(HttpHeaders.UserAgent, "SashaTicketAPIAgent/${constants.version}")
+            }
+            val send = Json{ignoreUnknownKeys = true}.encodeToString(ticket)
+            println(send)
+            contentType(ContentType.Application.Json)
+            setBody(send)
+        }
+        when (sendTicket.status.value) {
+            in 200..299 -> {
+                println(":)")
+                println(sendTicket.bodyAsText())//33
+                return Json{ignoreUnknownKeys = true}.decodeFromString(sendTicket.bodyAsText())
+            }
+            else -> {
+                println("${sendTicket.status.description} :(")
+                println(sendTicket.bodyAsText())
+                return null
+            }
+        }
+    }
     suspend fun modifyTicket(ticket: TicketAPIObj): Boolean {
         //Create the request...
         val request = client.put {
@@ -225,6 +254,71 @@ class APIAgent {
                 println("${send.status.description} :)")
                 return true
             }
+            else -> {
+                println("${send.status.description} :(")
+                return false
+            }
+        }
+    }
+    suspend fun getTicket(id: Int): TicketAPIObj? {
+        val send = client.get {
+            url {
+                protocol = URLProtocol.HTTP
+                host = constants.host
+                appendEncodedPathSegments("/api/v1/tickets/$id")
+            }
+            headers {
+                append(HttpHeaders.Authorization, "Token token=${secrets.apiKey}")
+                append(HttpHeaders.UserAgent, "SashaTicketAPIAgent/${constants.version}")
+            }
+        }
+        when(send.status.value) {
+            in 200..299 -> {
+                println("${send.status.description} :)")
+                println(send.bodyAsText())
+                return Json.decodeFromString(send.bodyAsText())
+            }
+
+            else -> {
+                println("${send.status.description} :(")
+                return null
+            }
+        }
+    }
+    suspend fun newTicketLink(ticket1: Int, ticket2: Int, linkType: String = "normal"): Boolean {
+        /**
+         * Links ticket2 as linkType of ticket1, just as the GUI would.
+         * Expects both to be ticket id numbers. The APIAgent will figure out the required fields.
+         */
+        var ticket1Number = getTicket(ticket1)?.number
+        var linkCreate: LinkAPIObj = LinkAPIObj(
+            linkType = linkType,
+            linkObjectTarget = "Ticket",
+            linkObjectTargetValue = ticket2,
+            linkObjectSource = "Ticket",
+            linkObjectSourceNumber = ticket1Number
+        )
+        val send = client.post {
+            url {
+                protocol = URLProtocol.HTTP
+                host = constants.host
+                appendEncodedPathSegments("/api/v1/links/add")
+            }
+            headers {
+                append(HttpHeaders.Authorization, "Token token=${secrets.apiKey}")
+                append(HttpHeaders.UserAgent, "SashaTicketAPIAgent/${constants.version}")
+            }
+            val send = Json.encodeToString(linkCreate)
+            println(send)
+            contentType(ContentType.Application.Json)
+            setBody(send)
+        }
+        when(send.status.value) {
+            in 200..299 -> {
+                println("${send.status.description} :)")
+                return true
+            }
+
             else -> {
                 println("${send.status.description} :(")
                 return false

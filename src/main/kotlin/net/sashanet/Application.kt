@@ -15,28 +15,29 @@ val constants = Constants()
 val utils = Utils()
 val secrets = Secrets()
 val newUserOnboarder = NewUserOnboarder()
+var lastOffBoardingId: Int? = 0
 
 fun main() {
     println("Kalimera! Welcome to SashaTicketAPIAgent v${constants.version}")
     embeddedServer(Netty, port = 80) {
         routing {
             post("/onboard") {
+                call.respondText("Poggers", ContentType.Text.Plain, HttpStatusCode.Accepted)
                 val webhook = call.receiveText()
                 println("Wow. A request? Received? No shot! Here is the info :)")
                 println(webhook)
                 val data = Json.decodeFromString<AccessRequestWebhook>(webhook)
-                call.respondText("Poggers", ContentType.Text.Plain, HttpStatusCode.Accepted)
                 newUserOnboarder.createUser(data)
             }
             get("/onboard") {
                 call.respondText("This method is not authorized for this resource... Yet :)", ContentType.Text.Plain, HttpStatusCode.Processing)
             }
             post("/newmediareq") {
+                call.respondText("Poggers", ContentType.Text.Plain, HttpStatusCode.Accepted)
                 val webhook = call.receiveText()
                 println("Wow. A request? Received? No shot! Here is the info :)")
                 println(webhook)
                 var data = Json.decodeFromString<MediaRequestWebhook>(webhook)
-                call.respondText("Poggers", ContentType.Text.Plain, HttpStatusCode.Accepted)
                 utils.patchMediaReqTitle(data)
             }
             get("/newmediareq") {
@@ -47,14 +48,21 @@ fun main() {
                     call.respondText("This method is not authorized for this resource.", ContentType.Text.Plain, HttpStatusCode.NotImplemented)
                 }
                 post {
+                    call.respondText("This method is not yet implemented.", ContentType.Text.Plain, HttpStatusCode.Accepted)
                     val webhook = call.receiveText()
                     println(webhook)
-                    call.respondText("This method is not yet implemented.", ContentType.Text.Plain, HttpStatusCode.NotImplemented)
+                    var data = Json.decodeFromString<OffboardingWebhook>(webhook)
+                    //call.respondText("This method is not yet implemented.", ContentType.Text.Plain, HttpStatusCode.Accepted)
+                    if(lastOffBoardingId == data.id) {
+                        println("This request was recently processed and will be ignored.")
+                    } else {
+                        utils.offboarding(data)
+                    }
                 }
             }
             route("/") {
                 get {
-                    call.respondText("This method is not authorized for this resource.", ContentType.Text.Plain, HttpStatusCode(418, "I'm a Teapot :)"))
+                    call.respondText("This method is not authorized for this resource... Yet :)", ContentType.Text.Plain, HttpStatusCode(418, "I'm a Teapot :)"))
                 }
             }
         }

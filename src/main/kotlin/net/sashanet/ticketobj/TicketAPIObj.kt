@@ -141,6 +141,9 @@ data class TicketAPIObj(
     @SerialName("pbx_site_opts")
     var pbxSiteOpts: String? = null,
     @SerialName("console")
-    var console: String? = null
-
+    var console: String? = null,
+    @SerialName("access_offboard_systems")
+    var accessOffboardSystems: List<String>? = listOf(),
+    @SerialName("offboard_on_site")
+    var offboardOnSite: Boolean? = null
 )
