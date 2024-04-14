@@ -43,6 +43,18 @@ fun main() {
             get("/newmediareq") {
                 call.respondText("This method is not authorized for this resource.", ContentType.Text.Plain, HttpStatusCode.NotImplemented)
             }
+            route("/mediacheck") {
+                get {
+                    call.respondText("This method is not authorized for this resource.", ContentType.Text.Plain, HttpStatusCode.NotImplemented)
+                }
+                post {
+                    call.respondText("This method is not yet implemented.", ContentType.Text.Plain, HttpStatusCode.Accepted)
+                    val webhook = call.receiveText()
+                    println(webhook)
+                    var data = Json.decodeFromString<TicketIDWebhook>(webhook)
+                    utils.mediaCheck(data)
+                }
+            }
             route("/offboard") {
                 get {
                     call.respondText("This method is not authorized for this resource.", ContentType.Text.Plain, HttpStatusCode.NotImplemented)
@@ -51,7 +63,7 @@ fun main() {
                     call.respondText("This method is not yet implemented.", ContentType.Text.Plain, HttpStatusCode.Accepted)
                     val webhook = call.receiveText()
                     println(webhook)
-                    var data = Json.decodeFromString<OffboardingWebhook>(webhook)
+                    var data = Json.decodeFromString<TicketIDWebhook>(webhook)
                     //call.respondText("This method is not yet implemented.", ContentType.Text.Plain, HttpStatusCode.Accepted)
                     if(lastOffBoardingId == data.id) {
                         println("This request was recently processed and will be ignored.")

@@ -41,7 +41,7 @@ class NewUserOnboarder() {
             apiAgent.modifyTicket(ticket)
             // First thing is to check if our user exists. If it does, we don't make it.
             val searchResponse = apiAgent.searchUser("email.keyword:${webhook.email}")
-            if(searchResponse == "[]") { //we proceed
+            if(searchResponse.size == 0) { //we proceed
                 val newGuy = NewUser(
                     login = webhook.email,
                     email = webhook.email,

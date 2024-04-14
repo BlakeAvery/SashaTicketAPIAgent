@@ -21,5 +21,7 @@ data class Preferences(
     @SerialName("theme")
     var theme: String? = null,
     @SerialName("notification_sound")
-    var notificationSound: NotificationSound? = null
+    var notificationSound: NotificationSound? = null,
+    @SerialName("escalation_calculation")
+    var escalationCalculation: EscalationCalculation? = null
 )

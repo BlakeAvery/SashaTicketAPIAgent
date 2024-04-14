@@ -145,5 +145,13 @@ data class TicketAPIObj(
     @SerialName("access_offboard_systems")
     var accessOffboardSystems: List<String>? = listOf(),
     @SerialName("offboard_on_site")
-    var offboardOnSite: Boolean? = null
+    var offboardOnSite: Boolean? = null,
+    @SerialName("pbx_displayname")
+    var pbxDisplayName: String? = null,
+    @SerialName("pbx_extension")
+    var pbxExtension: Int? = null,
+    @SerialName("pbx_deviceopts")
+    var pbxDeviceOpts: String? = null,
+    @SerialName("journal_datetime")
+    var journalDateTime: String? = null
 )

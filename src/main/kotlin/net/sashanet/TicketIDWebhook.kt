@@ -4,7 +4,7 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class OffboardingWebhook(
+data class TicketIDWebhook(
     @SerialName("id")
     var id: Int
 )

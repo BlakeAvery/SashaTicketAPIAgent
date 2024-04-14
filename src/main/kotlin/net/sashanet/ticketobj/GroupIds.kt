@@ -35,5 +35,17 @@ data class GroupIds(
     @SerialName("14")
     var x14: List<String>? = listOf(),
     @SerialName("15")
-    var x15: List<String>? = listOf()
+    var x15: List<String>? = listOf(),
+    @SerialName("16")
+    var x16: List<String>? = listOf(),
+    @SerialName("17")
+    var x17: List<String>? = listOf(),
+    @SerialName("18")
+    var x18: List<String>? = listOf(),
+    @SerialName("19")
+    var x19: List<String>? = listOf(),
+    @SerialName("20")
+    var x20: List<String>? = listOf(),
+    @SerialName("21")
+    var x21: List<String>? = listOf()
 )

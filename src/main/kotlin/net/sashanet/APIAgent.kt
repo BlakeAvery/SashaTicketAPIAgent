@@ -113,7 +113,7 @@ class APIAgent {
             }
         }
     }
-    suspend fun searchUser(query: String): String {
+    suspend fun searchUser(query: String): List<User> {
         val search = client.get {
             url {
                 protocol = URLProtocol.HTTP
@@ -128,12 +128,12 @@ class APIAgent {
         when (search.status.value) {
             in 200..299 -> {
                 println("${search.status.description} :)")
-                return search.body()
+                return Json.decodeFromString(search.bodyAsText())
             }
 
             else -> {
-                println("${search.status.description} :)")
-                return search.body()
+                println("${search.status.description} :(")
+                return Json.decodeFromString(search.bodyAsText())
             }
         }
     }
