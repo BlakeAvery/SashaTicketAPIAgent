@@ -72,6 +72,11 @@ fun main() {
                     }
                 }
             }
+            route("/hns") {
+                get {
+                    call.respondText("This method is not yet implemented.", ContentType.Text.Plain, HttpStatusCode.NotImplemented)
+                }
+            }
             route("/") {
                 get {
                     call.respondText("This method is not authorized for this resource... Yet :)", ContentType.Text.Plain, HttpStatusCode(418, "I'm a Teapot :)"))

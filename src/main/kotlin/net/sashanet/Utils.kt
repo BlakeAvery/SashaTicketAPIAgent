@@ -91,7 +91,7 @@ class Utils {
                                 <li>Check <a href=https://iptv-org.github.io/>iptv-org.github.io</a> for updated feeds for each stale channel.</li>
                                 <li>If you cannot find a suitable replacement, please find an alternative channel and rotate the stale channel for the new channel.</li>
                             </ol>
-                            <p>Documentation on this process is available in the Knowledge Base. Please complete this ticket within 2 weeks of submission.</p>
+                            <p>Documentation on this process is available in the Knowledge Base. Please complete this ticket within 1 week of submission.</p>
                             <p>You run the risk of reduced entertainment experience for TVHeadend users if this task is not completed in a timely manner.</p>
                         """.trimIndent()
                     )
@@ -109,7 +109,7 @@ class Utils {
                     contentType = "text/html",
                     subject = "${mediaCheckTicket.title} rejected - Cycle resetting",
                     body = """
-                        This ticket was rejected. Creating new ticket here. The biweekly cycle resets here.
+                        This ticket was rejected. Creating new ticket here. This task is mandatory.
                     """.trimIndent()
                 ))
                 apiAgent.newTicket(TicketAPIObj(
@@ -135,7 +135,7 @@ class Utils {
                                 <li>Check <a href=https://iptv-org.github.io/>iptv-org.github.io</a> for updated feeds for each stale channel.</li>
                                 <li>If you cannot find a suitable replacement, please find an alternative channel and rotate the stale channel for the new channel.</li>
                             </ol>
-                            <p>Documentation on this process is available in the Knowledge Base. Please complete this ticket within 2 weeks of submission.</p>
+                            <p>Documentation on this process is available in the Knowledge Base. Please complete this ticket within 1 week of submission.</p>
                             <p>You run the risk of reduced entertainment experience for TVHeadend users if this task is not completed in a timely manner.</p>
                         """.trimIndent()
                     )
@@ -168,7 +168,7 @@ class Utils {
                                 <li>Check <a href=https://iptv-org.github.io/>iptv-org.github.io</a> for updated feeds for each stale channel.</li>
                                 <li>If you cannot find a suitable replacement, please find an alternative channel and rotate the stale channel for the new channel.</li>
                             </ol>
-                            <p>Documentation on this process is available in the Knowledge Base. Please complete this ticket within 2 weeks of submission.</p>
+                            <p>Documentation on this process is available in the Knowledge Base. Please complete this ticket within 1 week of submission.</p>
                             <p>You run the risk of reduced entertainment experience for TVHeadend users if this task is not completed RIGHT NOW.</p>
                             <p>This ticket is now high priority. Hurry up already!</p>
                             <br>
