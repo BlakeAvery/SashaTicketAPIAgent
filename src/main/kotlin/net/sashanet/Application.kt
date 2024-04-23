@@ -72,6 +72,18 @@ fun main() {
                     }
                 }
             }
+            route("/newradiolog") {
+                get {
+                    call.respondText("This method is not authorized for this resource.", ContentType.Text.Plain, HttpStatusCode.NotImplemented)
+                }
+                post {
+                    call.respondText("Poggers", ContentType.Text.Plain, HttpStatusCode.Accepted)
+                    val webhook = call.receiveText()
+                    println(webhook)
+                    val data = Json.decodeFromString<TicketIDWebhook>(webhook)
+                    utils.patchRadioLogbookEntry(data)
+                }
+            }
             route("/hns") {
                 get {
                     call.respondText("This method is not yet implemented.", ContentType.Text.Plain, HttpStatusCode.NotImplemented)

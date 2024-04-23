@@ -153,5 +153,26 @@ data class TicketAPIObj(
     @SerialName("pbx_deviceopts")
     var pbxDeviceOpts: String? = null,
     @SerialName("journal_datetime")
-    var journalDateTime: String? = null
+    var journalDateTime: String? = null,
+    @SerialName("ham_usercallsign")
+    var hamUserCallsign: String? = null,
+    @SerialName("ham_contactcallsign")
+    var hamContactCallsign: String? = null,
+    @SerialName("ham_timestart")
+    var hamTimeStart: String? = null,
+    @SerialName("ham_timeend")
+    var hamTimeEnd: String? = null,
+    @SerialName("ham_band")
+    var hamBand: String? = null,
+    @SerialName("ham_frequency")
+    var hamFrequency: String? = null,
+    @SerialName("ham_mode")
+    var hamMode: String? = null,
+    @SerialName("ham_power")
+    var hamPower: String? = null,
+    @SerialName("ham_userlocation")
+    var hamUserLocation: String? = null,
+    @SerialName("ham_contactlocation")
+    var hamContactLocation: String? = null
+
 )

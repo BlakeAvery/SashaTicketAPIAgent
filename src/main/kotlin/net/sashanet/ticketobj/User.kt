@@ -32,6 +32,8 @@ data class User(
     var fax: String? = null,
     @SerialName("mobile")
     var mobile: String? = null,
+    @SerialName("ham_callsign")
+    var hamCallSign: String? = null,
     @SerialName("department")
     var department: String? = null,
     @SerialName("title")

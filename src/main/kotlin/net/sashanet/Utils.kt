@@ -64,6 +64,19 @@ class Utils {
             title = modTitle)
         apiAgent.modifyTicket(ticket)
     }
+    suspend fun patchRadioLogbookEntry(webhook: TicketIDWebhook) {
+        println("Getting ticket...")
+        var radioLogEntry = apiAgent.getTicket(webhook.id)
+        println("First step: Change customer and owner to creator of ticket")
+        var creator = apiAgent.searchUser("id:${radioLogEntry?.createdById}")[0]
+        radioLogEntry?.ownerId = creator.id
+        radioLogEntry?.customerId = creator.id
+        apiAgent.modifyTicket(radioLogEntry!!)
+        println("Then we patch their callsign in...")
+        radioLogEntry.hamUserCallsign = creator.hamCallSign
+        apiAgent.modifyTicket(radioLogEntry)
+        println("Should be all set.")
+    }
     suspend fun mediaCheck(webhook: TicketIDWebhook) {
         println("Getting ticket...")
         var mediaCheckTicket = apiAgent.getTicket(webhook.id)
