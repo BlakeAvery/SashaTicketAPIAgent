@@ -24,6 +24,7 @@ import kotlin.text.get
 private val client = HttpClient()
 class APIAgent {
     suspend fun newTicket(ticket: TicketAPIObj): TicketAPIObj? {
+        println("Opening new ticket...")
         val sendTicket = client.post {
             url {
                 protocol = URLProtocol.HTTP
@@ -41,18 +42,19 @@ class APIAgent {
         }
         when (sendTicket.status.value) {
             in 200..299 -> {
-                println(":)")
+                println("${sendTicket.status}")
                 println(sendTicket.bodyAsText())//33
                 return Json{ignoreUnknownKeys = true}.decodeFromString(sendTicket.bodyAsText())
             }
             else -> {
-                println("${sendTicket.status.description} :(")
+                println("${sendTicket.status} :(")
                 println(sendTicket.bodyAsText())
                 return null
             }
         }
     }
     suspend fun modifyTicket(ticket: TicketAPIObj): Boolean {
+        println("Modifying ticket ${ticket.id}...")
         //Create the request...
         val request = client.put {
             url {
@@ -73,18 +75,19 @@ class APIAgent {
         val respBody = request.bodyAsText()
         when(request.status.value) {
             in 200..299 -> {
-                println("${request.status.description} :)")
+                println("${request.status} :)")
                 println(respBody)
                 return true
             }
             else -> {
-                println("${request.status.description} :(")
+                println("${request.status} :(")
                 println(respBody)
                 return false
             }
         }
     }
     suspend fun createUser(user: NewUser): User? {
+        println("Creating user ${user.email}...")
         val sendUser = client.post {
             url {
                 protocol = URLProtocol.HTTP
@@ -102,18 +105,21 @@ class APIAgent {
         }
         when (sendUser.status.value) {
             in 200..299 -> {
+                println("${sendUser.status.value} ${sendUser.status.description} :)")
                 println("New user provisioned :) Here is their raw JSON for your observation.")
                 println(sendUser.bodyAsText())
                 return Json.decodeFromString(sendUser.bodyAsText())
             }
             else -> {
-                println("${sendUser.status.description} :(")
+                println("${sendUser.status.value} ${sendUser.status.description} :(")
                 println(sendUser.bodyAsText())
+                println("A user was not created.")
                 return null
             }
         }
     }
     suspend fun searchUser(query: String): List<User> {
+        println("Searching for users based on parameter: ${query}")
         val search = client.get {
             url {
                 protocol = URLProtocol.HTTP
@@ -127,17 +133,18 @@ class APIAgent {
         }
         when (search.status.value) {
             in 200..299 -> {
-                println("${search.status.description} :)")
+                println("${search.status} :)")
                 return Json.decodeFromString(search.bodyAsText())
             }
 
             else -> {
-                println("${search.status.description} :(")
+                println("${search.status} :(")
                 return Json.decodeFromString(search.bodyAsText())
             }
         }
     }
     suspend fun addTag(tag: String, ticket: Int) {
+        println("Adding tag $tag to ticket ID $ticket...")
         val send = client.post {
             url {
                 protocol = URLProtocol.HTTP
@@ -156,16 +163,17 @@ class APIAgent {
         val respBody = send.bodyAsText()
         when(send.status.value) {
             in 200..299 -> {
-                println("${send.status.description} :)")
+                println("${send.status} :)")
                 println(respBody)
             }
             else -> {
-                println("${send.status.description} :(")
+                println("${send.status} :(")
                 println(respBody)
             }
         }
     }
     suspend fun deleteTag(tag: String, ticket: Int) {
+        println("Deleting tag $tag from ticket ID $ticket...")
         val send = client.delete {
             url {
                 protocol = URLProtocol.HTTP
@@ -184,16 +192,17 @@ class APIAgent {
         val respBody = send.bodyAsText()
         when(send.status.value) {
             in 200..299 -> {
-                println("${send.status.description} :)")
+                println("${send.status} :)")
                 println(respBody)
             }
             else -> {
-                println("${send.status.description} :(")
+                println("${send.status} :(")
                 println(respBody)
             }
         }
     }
     suspend fun getTicketArticles(id: Int): List<Article> {
+        println("Obtaining all articles attached to ticket id $id...")
         var retList: List<Article> = listOf()
         val send = client.get {
             url {
@@ -210,6 +219,7 @@ class APIAgent {
         return retList
     }
     suspend fun getArticle(id: Int): Article? {
+        println("Getting article $id...")
         val send = client.get {
             url {
                 protocol = URLProtocol.HTTP
@@ -223,17 +233,18 @@ class APIAgent {
         }
         when(send.status.value) {
             in 200..299 -> {
-                println("${send.status.description} :)")
+                println("${send.status} :)")
                 return Json.decodeFromString(send.bodyAsText())
             }
 
             else -> {
-                println("${send.status.description} :(")
+                println("${send.status} :(")
                 return null
             }
         }
     }
     suspend fun newArticle(article: Article): Boolean {
+        println("Creating new ${article.type} article (internal = ${article.internal})...")
         val send = client.post {
             url {
                 protocol = URLProtocol.HTTP
@@ -251,16 +262,17 @@ class APIAgent {
         }
         when(send.status.value) {
             in 200..299 -> {
-                println("${send.status.description} :)")
+                println("${send.status} :)")
                 return true
             }
             else -> {
-                println("${send.status.description} :(")
+                println("${send.status} :(")
                 return false
             }
         }
     }
     suspend fun getTicket(id: Int): TicketAPIObj? {
+        println("Looking for ticket $id...")
         val send = client.get {
             url {
                 protocol = URLProtocol.HTTP
@@ -274,13 +286,14 @@ class APIAgent {
         }
         when(send.status.value) {
             in 200..299 -> {
-                println("${send.status.description} :)")
+                println("${send.status} :)")
                 println(send.bodyAsText())
                 return Json.decodeFromString(send.bodyAsText())
             }
 
             else -> {
-                println("${send.status.description} :(")
+                println("${send.status} :(")
+                println("I don't think we have ticket $id. Returning null.")
                 return null
             }
         }
@@ -290,6 +303,7 @@ class APIAgent {
          * Links ticket2 as linkType of ticket1, just as the GUI would.
          * Expects both to be ticket id numbers. The APIAgent will figure out the required fields.
          */
+        println("Linking ticket $ticket2 with link type $linkType to ticket $ticket1...")
         var ticket1Number = getTicket(ticket1)?.number
         var linkCreate: LinkAPIObj = LinkAPIObj(
             linkType = linkType,
@@ -315,12 +329,12 @@ class APIAgent {
         }
         when(send.status.value) {
             in 200..299 -> {
-                println("${send.status.description} :)")
+                println("${send.status} :)")
                 return true
             }
 
             else -> {
-                println("${send.status.description} :(")
+                println("${send.status} :(")
                 return false
             }
         }

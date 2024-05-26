@@ -22,50 +22,59 @@ private val client = HttpClient()
  */
 class NewUserOnboarder() {
     suspend fun createUser(webhook: AccessRequestWebhook) {
-        // Attempted collision detection.
-        println("Last ticket id processed: ${utils.lastTicketProcessed}")
-        if(utils.lastTicketProcessed != webhook.internalId.toInt()) {
+        /*
+         Attempted collision detection.
+         Imma comment this out and see what happens since I think the double request issue was resolved
+         by me making APIAgent respond immediately when it gets a webhook.
+         */
+        //println("Last ticket id processed: ${utils.lastTicketProcessed}")
+        /*if(utils.lastTicketProcessed != webhook.internalId.toInt()) {
             // Take ownership of ticket
             utils.lastTicketProcessed = webhook.internalId.toInt()
-            val ticket = TicketAPIObj(
-                id = webhook.internalId.toInt(),
-                ownerId = constants.apiAgentUserID,
-                article = Article(
-                    internal = true,
-                    sender = "Agent",
-                    contentType = "text/html",
-                    type = "note",
-                    body = "Processing by API Agent begins at ${Date()}."
-                )
+        } else {
+            println("Request id ${webhook.internalId}/#REQ-${webhook.ticketNumber} has already been received by the system.")
+        }*/
+        println(apiAgent)
+        val ticket = TicketAPIObj(
+            id = webhook.internalId.toInt(),
+            ownerId = null,
+            article = Article(
+                internal = true,
+                sender = "Agent",
+                contentType = "text/html",
+                type = "note",
+                body = "Processing by ${constants.userAgent} begins at ${Date()}."
             )
-            apiAgent.modifyTicket(ticket)
-            // First thing is to check if our user exists. If it does, we don't make it.
-            val searchResponse = apiAgent.searchUser("email.keyword:${webhook.email}")
-            if(searchResponse.size == 0) { //we proceed
-                val newGuy = NewUser(
-                    login = webhook.email,
-                    email = webhook.email,
-                    firstname = webhook.firstName,
-                    lastname = webhook.lastName,
-                    organization = utils.parseOrgs(webhook.org),
-                    roles = arrayOf("SashaNet Agent").toList(),
-                    phone = webhook.phoneNumber, //TODO: convert phone number to E.164 using libphonenumber
-                    mobile = "",
-                    password = utils.generatePassword(8)
-                )
-                val newUser = apiAgent.createUser(newGuy)
-                if(newUser != null) {
-                    apiAgent.modifyTicket(TicketAPIObj(
-                        id = webhook.internalId.toInt(),
-                        state = "closed",
-                        article = Article(
-                            internal = true,
-                            sender = "System",
-                            type = "email",
-                            to = newUser.email,
-                            contentType = "text/html",
-                            subject = "Welcome to SashaTicket, ${newUser.firstname} :3",
-                            body = """
+        )
+        apiAgent.modifyTicket(ticket)
+        // First thing is to check if our user exists. If it does, we don't make it.
+        val searchResponse = apiAgent.searchUser("email.keyword:${webhook.email}")
+        if(searchResponse.size == 0) { //we proceed
+            val newGuy = NewUser(
+                login = webhook.email,
+                email = webhook.email,
+                firstname = webhook.firstName,
+                lastname = webhook.lastName,
+                organization = utils.parseOrgs(webhook.org),
+                roles = arrayOf("SashaNet Agent").toList(),
+                phone = webhook.phoneNumber, //TODO: convert phone number to E.164 using libphonenumber
+                mobile = "",
+                password = utils.generatePassword(8)
+            )
+            val newUser = apiAgent.createUser(newGuy)
+            if(newUser != null) {
+                apiAgent.modifyTicket(TicketAPIObj(
+                    id = webhook.internalId.toInt(),
+                    state = "closed",
+                    ownerId = constants.apiAgentUserID,
+                    article = Article(
+                        internal = true,
+                        sender = "System",
+                        type = "email",
+                        to = newUser.email,
+                        contentType = "text/html",
+                        subject = "Welcome to SashaTicket, ${newUser.firstname} :3",
+                        body = """
                             <h4>Hello ${newUser.firstname},<br/><br/></h4>
                             <p>This email is to let you know that an account has been created for you on SashaTicket!<br/>
                             SashaTicket is your one source to request anything from SashaNet's team, up to and including Sasha herself :3<br/><br/></p>
@@ -73,42 +82,39 @@ class NewUserOnboarder() {
                             This password is automatically generated, and should not be considered secure.<br/><br/></p>
                             Username/login: ${newUser.login}<br/>
                             Password: ${newGuy.password}<br/><br/>
-                            <p>If you would also like to receive SMS notifications/communications on tickets, please let us know by responding to this email,<br/>
-                            or by placing a SMS Opt-In ticket on SashaTicket.<br/><br/></p>
-                            Log in <a href=http://99.38.119.115>here</a>!<br/>
-                            (Or if you happen to be on site at SashaNet's main Beverly location use <a href=http://sashaticketv2.net>this link</a> instead :3)<br/><br/>
+                            <p>If you would also like to receive SMS notifications/communications on tickets, please let us know by responding to this email.<br/><br/></p>
+                            Log in <a href=https://99.38.119.115>here</a>(The site is safe. We do not register with any certificate authority.)<br/>
+                            (Or if you happen to be on site at SashaNet's main Beverly location or VPNed in use <a href=https://sashaticketv2.net>this link</a> instead :3)<br/><br/>
                             SashaTicket System<br/>
                             Access provisioned under #REQ-${webhook.ticketNumber} by ${constants.userAgent}<br/>
                         """.trimIndent().trim('\n')
-                        )
-                    ))
-                    apiAgent.modifyTicket(TicketAPIObj(
-                        id = webhook.internalId.toInt(),
-                        article = Article(
-                            internal = true,
-                            sender = "Agent",
-                            type = "note",
-                            contentType = "text/html",
-                            body = "Processing ended by ${constants.userAgent} at ${Date()}."
-                        )
-                    ))
-                }
-            } else {
-                println("No action taken. Mark this as rejected and close ticket.")
-                apiAgent.deleteTag("approved", webhook.internalId.toInt())
-                apiAgent.addTag("rejected", webhook.internalId.toInt())
-                var originalRequestorEmail = utils.getUserEmailFromID(webhook.originalRequester.toInt())
-                val ticket = TicketAPIObj(
+                    )
+                ))
+                apiAgent.modifyTicket(TicketAPIObj(
                     id = webhook.internalId.toInt(),
-                    state = "closed",
                     article = Article(
-                        internal = false,
+                        internal = true,
                         sender = "Agent",
-                        type = "email",
-                        to = originalRequestorEmail,
+                        type = "note",
                         contentType = "text/html",
-                        subject = "Access for ${webhook.email} rejected",
-                        body = """
+                        body = "Processing ended by ${constants.userAgent} at ${Date()}."
+                    )
+                ))
+            }
+        } else {
+            println("No action taken. Mark this as rejected and close ticket.")
+            var originalRequestorEmail = utils.getUserEmailFromID(webhook.originalRequester.toInt())
+            val ticket = TicketAPIObj(
+                id = webhook.internalId.toInt(),
+                state = "rejected",
+                article = Article(
+                    internal = false,
+                    sender = "Agent",
+                    type = "email",
+                    to = originalRequestorEmail,
+                    contentType = "text/html",
+                    subject = "Access for ${webhook.email} rejected",
+                    body = """
                         <h4>Hello,</h4>
                         <p>This email is to notify you that your access request for ${webhook.firstName} ${webhook.lastName} was rejected
                         because the account already likely exists. If you believe this was an error, please resubmit the request referencing this
@@ -116,12 +122,9 @@ class NewUserOnboarder() {
                         SashaTicket System<br/>
                         Request rejected by ${constants.userAgent} at ${Date()}<br/>
                     """.trimIndent()
-                    )
                 )
-                apiAgent.modifyTicket(ticket)
-            }
-        } else {
-            println("Request id ${webhook.internalId}/#REQ-${webhook.ticketNumber} has already been received by the system.")
+            )
+            apiAgent.modifyTicket(ticket)
         }
     }
 }

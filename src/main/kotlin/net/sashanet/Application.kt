@@ -19,7 +19,7 @@ var lastOffBoardingId: Int? = 0
 
 fun main() {
     println("Kalimera! Welcome to SashaTicketAPIAgent v${constants.version}")
-    embeddedServer(Netty, port = 80) {
+    embeddedServer(Netty, port = 1080) { //This should stop root from being required on the APIAgent machine :)
         routing {
             post("/onboard") {
                 call.respondText("Poggers", ContentType.Text.Plain, HttpStatusCode.Accepted)
@@ -87,6 +87,11 @@ fun main() {
             route("/hns") {
                 get {
                     call.respondText("This method is not yet implemented.", ContentType.Text.Plain, HttpStatusCode.NotImplemented)
+                }
+            }
+            route("/version") {
+                get {
+                    call.respondText(constants.userAgent, ContentType.Text.Plain, HttpStatusCode.OK)
                 }
             }
             route("/") {

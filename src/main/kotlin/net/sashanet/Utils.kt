@@ -13,7 +13,7 @@ import java.util.Date
 
 val apiAgent = APIAgent()
 class Utils {
-    var lastTicketProcessed: Int = 0
+    var currentTicketProcessing: Int = 0
     fun parseOrgs(org: String): String {
         when(org) {
             "fgss" -> return "FGSS"
@@ -37,7 +37,7 @@ class Utils {
     fun generatePassword(length: Int): String {
         val possibleChars: CharSequence = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890!@#$%^&*"
         var ret = ""
-        for(i in 0..length - 1) {
+        for(i in 0..<length) {
             ret += possibleChars.random()
         }
         println(ret)
