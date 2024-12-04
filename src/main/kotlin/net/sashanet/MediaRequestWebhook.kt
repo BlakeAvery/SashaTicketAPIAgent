@@ -7,7 +7,7 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class MediaRequestWebhook(
     @SerialName("internal_id")
-    var internalId: String? = null,
+    var internalId: Int? = null,
     @SerialName("media_name")
     var mediaName: String? = null,
     @SerialName("media_type")

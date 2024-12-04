@@ -7,7 +7,7 @@ data class AccessRequestWebhook(
     @SerialName("ticket_number")
     var ticketNumber: String,
     @SerialName("internal_id")
-    var internalId: String,
+    var internalId: Int,
     @SerialName("email")
     var email: String,
     @SerialName("first_name")
@@ -19,5 +19,5 @@ data class AccessRequestWebhook(
     @SerialName("phone_number")
     var phoneNumber: String,
     @SerialName("original_requester")
-    var originalRequester: String
+    var originalRequester: Int
 )

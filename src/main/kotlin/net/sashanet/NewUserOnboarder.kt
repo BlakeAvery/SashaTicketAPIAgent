@@ -18,22 +18,10 @@ import kotlin.text.get
 private val client = HttpClient()
 /**
  * NewUserOnboarder: Test class that implements everything we need for our workflow by hand.
- * This is going to be inserted into utils soon :)
+ * This is inserted into Utils and will be deprecated soon :)
  */
 class NewUserOnboarder() {
     suspend fun createUser(webhook: AccessRequestWebhook) {
-        /*
-         Attempted collision detection.
-         Imma comment this out and see what happens since I think the double request issue was resolved
-         by me making APIAgent respond immediately when it gets a webhook.
-         */
-        //println("Last ticket id processed: ${utils.lastTicketProcessed}")
-        /*if(utils.lastTicketProcessed != webhook.internalId.toInt()) {
-            // Take ownership of ticket
-            utils.lastTicketProcessed = webhook.internalId.toInt()
-        } else {
-            println("Request id ${webhook.internalId}/#REQ-${webhook.ticketNumber} has already been received by the system.")
-        }*/
         println(apiAgent)
         val ticket = TicketAPIObj(
             id = webhook.internalId.toInt(),
@@ -83,7 +71,7 @@ class NewUserOnboarder() {
                             Username/login: ${newUser.login}<br/>
                             Password: ${newGuy.password}<br/><br/>
                             <p>If you would also like to receive SMS notifications/communications on tickets, please let us know by responding to this email.<br/><br/></p>
-                            Log in <a href=https://99.38.119.115>here</a>(The site is safe. We do not register with any certificate authority.)<br/>
+                            Log in <a href=https://99.38.119.115>here</a> (The site is safe. We do not register with any certificate authority.)<br/>
                             (Or if you happen to be on site at SashaNet's main Beverly location or VPNed in use <a href=https://sashaticketv2.net>this link</a> instead :3)<br/><br/>
                             SashaTicket System<br/>
                             Access provisioned under #REQ-${webhook.ticketNumber} by ${constants.userAgent}<br/>
@@ -97,7 +85,7 @@ class NewUserOnboarder() {
                         sender = "Agent",
                         type = "note",
                         contentType = "text/html",
-                        body = "Processing ended by ${constants.userAgent} at ${Date()}."
+                        body = "Processing by ${constants.userAgent} ends at ${Date()}."
                     )
                 ))
             }
