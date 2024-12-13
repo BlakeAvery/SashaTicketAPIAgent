@@ -173,6 +173,13 @@ data class TicketAPIObj(
     @SerialName("ham_userlocation")
     var hamUserLocation: String? = null,
     @SerialName("ham_contactlocation")
-    var hamContactLocation: String? = null
-
+    var hamContactLocation: String? = null,
+    @SerialName("facilities_location")
+    var facilitiesLocation: String? = null,
+    @SerialName("facilities_req_type")
+    var facilitiesReqType: String? = null,
+    @SerialName("media_genre")
+    var mediaGenre: List<String>? = null,
+    @SerialName("checklist_id")
+    var checklistID: Int? = null
 )

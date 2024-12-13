@@ -370,6 +370,41 @@ class Utils {
             ))
             apiAgent.newTicketLink(offboardingTicket.id!!, ticket?.id!!, "parent")
         }
-
+    }
+    suspend fun newTicketNotification(webhook: TicketIDWebhook) {
+        println("Getting ticket...")
+        var ticket = apiAgent.getTicket(webhook.id)
+        println("Pulling the user object for the customer...")
+        var customer = apiAgent.getUser(ticket?.customerId!!)
+        if(customer == null) {
+            println("Wow. a made up customer. Well. I'm not gonna do that.")
+        } else {
+            val agent = apiAgent.getUser(ticket.createdById!!)
+            val article = Article(
+                internal = true,
+                sender = "System",
+                contentType = "text/html",
+                type = "email",
+                to = customer.email,
+                subject = "New ticket: \"${ticket.title}\" has been created for you",
+                body = """
+                <h4>Hello ${customer.firstname},<br/><br/></h4>
+                A ticket has been opened on your behalf by ${agent?.firstname} ${agent?.lastname} [${agent?.email}].<br/><br/>
+                <strong>Type: ${ticket.type}</strong><br/>
+                <strong>Title: ${ticket.title}</strong><br/>
+                <strong>Description: <br/>${apiAgent.getTicketArticles(ticket.id!!)?.get(0)?.body}</strong><br/><br/>
+                If you have any details you would like to add, you can either:<br/>
+                Respond to this email<br/>
+                Log into SashaTicket and add a note to the ticket <strong><a href=https://99.38.119.115#ticket/zoom/${ticket.id}>here</a></strong>.<br/>
+                We will look into this request and provide an update as soon as possible.<br/><br/>
+                SashaNet | 269-257-2742
+            """.trimIndent().trim('\n')
+            )
+            apiAgent.modifyTicket(
+                TicketAPIObj(
+                id = ticket.id,
+                article = article
+            ))
+        }
     }
 }

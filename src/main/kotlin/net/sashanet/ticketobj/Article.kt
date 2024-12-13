@@ -32,6 +32,8 @@ data class Article(
     val messageId: String? = null,
     @SerialName("message_id_md5")
     val messageIdMd5: String? = null,
+    @SerialName("origin_by")
+    val originBy: String? = null,
     @SerialName("origin_by_id")
     val originById: Int? = null,
     @SerialName("preferences")
@@ -59,5 +61,7 @@ data class Article(
     @SerialName("updated_by")
     val updatedBy: String? = null,
     @SerialName("updated_by_id")
-    val updatedById: Int? = null
+    val updatedById: Int? = null,
+    @SerialName("time_unit")
+    val timeUnit: String? = null,
 )

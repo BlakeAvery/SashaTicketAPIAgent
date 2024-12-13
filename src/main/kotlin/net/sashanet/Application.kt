@@ -2,6 +2,7 @@ package net.sashanet
 
 import AccessRequestWebhook
 import io.ktor.http.*
+import io.ktor.http.ContentType.Text.Plain
 import io.ktor.server.application.*
 import io.ktor.server.engine.*
 import io.ktor.server.netty.*
@@ -19,8 +20,9 @@ var lastOffBoardingId: Int? = 0
 
 fun main() {
     println("Kalimera! Welcome to SashaTicketAPIAgent v${constants.version}")
-    println("(c) 2024 SashaNet")
-    println("Please log any issues at https://sashaticketv2.net")
+    println("(c) 2024-2025 SashaNet")
+    println("Please log any issues at https://sashaticketv2.net.")
+    println("Your Zammad instance is at: ${constants.host} and we are user ID ${constants.apiAgentUserID} for this run.")
     embeddedServer(Netty, port = 1080) { //This should stop root from being required on the APIAgent machine :)
         routing {
             post("/onboard") {
@@ -135,40 +137,16 @@ fun main() {
                     utils.patchRadioLogbookEntry(data)
                 }
             }
-            route("/change_in") {
+            route("/customernewnotif") {
                 get {
-                    call.respondText("This method is not authorized for this resource.", ContentType.Text.Plain, HttpStatusCode.NotImplemented)
+                    call.respondText("This method is not authorized for this resource.", ContentType.Text.Plain, HttpStatusCode.Unauthorized)
                 }
                 post {
                     call.respondText("200 OK", ContentType.Text.Plain, HttpStatusCode.Accepted)
                     val webhook = call.receiveText()
                     println(webhook)
                     val data = Json.decodeFromString<TicketIDWebhook>(webhook)
-                    //utils.patchRadioLogbookEntry(data)
-                }
-            }
-            route("/change_approval_action") {
-                get {
-                    call.respondText("This method is not authorized for this resource.", ContentType.Text.Plain, HttpStatusCode.NotImplemented)
-                }
-                post {
-                    call.respondText("200 OK", ContentType.Text.Plain, HttpStatusCode.Accepted)
-                    val webhook = call.receiveText()
-                    println(webhook)
-                    val data = Json.decodeFromString<TicketIDWebhook>(webhook)
-                    //utils.patchRadioLogbookEntry(data)
-                }
-            }
-            route("/change_complete") {
-                get {
-                    call.respondText("This method is not authorized for this resource.", ContentType.Text.Plain, HttpStatusCode.NotImplemented)
-                }
-                post {
-                    call.respondText("Poggers", ContentType.Text.Plain, HttpStatusCode.Accepted)
-                    val webhook = call.receiveText()
-                    println(webhook)
-                    val data = Json.decodeFromString<TicketIDWebhook>(webhook)
-                    //utils.patchRadioLogbookEntry(data)
+                    utils.newTicketNotification(data)
                 }
             }
             route("/hns") {

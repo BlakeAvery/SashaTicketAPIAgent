@@ -143,6 +143,29 @@ class APIAgent {
             }
         }
     }
+    suspend fun getUser(id: Int): User? {
+        val getting = client.get {
+            url {
+                protocol = URLProtocol.HTTP
+                host = constants.host
+                appendEncodedPathSegments("/api/v1/users/$id")
+            }
+            headers {
+                append(HttpHeaders.Authorization, "Token token=${secrets.apiKey}")
+                append(HttpHeaders.UserAgent, constants.userAgent)
+            }
+        }
+        when(getting.status.value) {
+            in 200..299 -> {
+                println("${getting.status} :)")
+                return Json{ignoreUnknownKeys = true}.decodeFromString(getting.bodyAsText())
+            }
+            else -> {
+                println("${getting.status} :(")
+                return null
+            }
+        }
+    }
     suspend fun addTag(tag: String, ticket: Int) {
         println("Adding tag $tag to ticket ID $ticket...")
         val send = client.post {
@@ -201,7 +224,7 @@ class APIAgent {
             }
         }
     }
-    suspend fun getTicketArticles(id: Int): List<Article> {
+    suspend fun getTicketArticles(id: Int): List<Article>? {
         println("Obtaining all articles attached to ticket id $id...")
         var retList: List<Article> = listOf()
         val send = client.get {
@@ -215,8 +238,19 @@ class APIAgent {
                 append(HttpHeaders.UserAgent, "SashaTicketAPIAgent/${constants.version}")
             }
         }
-        retList = Json.decodeFromString(send.bodyAsText())
-        return retList
+        when(send.status.value) {
+            in 200..299 -> {
+                println("${send.status} :)")
+                println(send.bodyAsText())
+                retList = Json.decodeFromString(send.bodyAsText())
+                return retList
+            }
+            else -> {
+                println("${send.status} :(")
+                println(send.bodyAsText())
+                return null
+            }
+        }
     }
     suspend fun getArticle(id: Int): Article? {
         println("Getting article $id...")
